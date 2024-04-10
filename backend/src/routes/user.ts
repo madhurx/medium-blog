@@ -15,19 +15,24 @@ userRouter.post("/signup", async (c) => {
 		datasourceUrl: c.env.DATABASE_URL,
 	}).$extends(withAccelerate());
 
-	const body = await c.req.json();
+	try {
+		const body = await c.req.json();
+		const user = await prisma.user.create({
+			data: {
+				email: body.email,
+				password: body.password,
+			},
+		});
 
-	const user = await prisma.user.create({
-		data: {
-			email: body.email,
-			password: body.password,
-		},
-	});
-
-	const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-	return c.json({
-		jwt: token,
-	});
+		const token = await sign({ id: user.id }, c.env.JWT_SECRET);
+		return c.json({
+			jwt: token,
+		});
+	} catch (error) {
+		console.log(error);
+		c.status(411);
+		return c.text("invalid");
+	}
 });
 
 userRouter.post("/signin", async (c) => {

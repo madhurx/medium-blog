@@ -14,13 +14,19 @@ export const blogRouter = new Hono<{
 }>();
 
 blogRouter.use("/*", async (c, next) => {
-	const jwt = c.req.header("authorization") || "";
-	const token = jwt.split(" ")[1];
-	const response = await verify(token, c.env.JWT_SECRET);
-	if (response.id) {
-		c.set("userId", response.id);
-		await next();
-	} else {
+	try {
+		const jwt = c.req.header("authorization") || "";
+		const token = jwt.split(" ")[1];
+		const response = await verify(token, c.env.JWT_SECRET);
+		if (response.id) {
+			c.set("userId", response.id);
+			await next();
+		} else {
+			c.status(403);
+			return c.json({ error: "unauthorized" });
+		}
+	} catch (error) {
+		console.log(error);
 		c.status(403);
 		return c.json({ error: "unauthorized" });
 	}
