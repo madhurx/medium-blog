@@ -21,7 +21,9 @@ userRouter.post("/signup", async (c) => {
 		const { success } = signupInput.safeParse(body);
 		if (!success) {
 			c.status(400);
-			return c.json({ error: "invalid input" });
+			return c.json({
+				error: signupInput.safeParse(body),
+			});
 		}
 		const user = await prisma.user.create({
 			data: {
