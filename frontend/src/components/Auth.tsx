@@ -34,8 +34,8 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 						onChange={() => {}}
 					/>
 					<LabelledInput
-						label="Confirm Password"
-						placeholder="Confirm Password"
+						label="Full Name"
+						placeholder="Full Name"
 						onChange={() => {}}
 					/>
 				</>
