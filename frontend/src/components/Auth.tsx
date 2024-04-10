@@ -1,6 +1,14 @@
+import { SignupType } from "@madhurx/medium-common";
+import { ChangeEvent, useState } from "react";
 import { Link } from "react-router-dom";
 
 const Auth = ({ type }: { type: "signup" | "signin" }) => {
+	const [postInputs, setPostInputs] = useState<SignupType>({
+		name: "",
+		email: "",
+		password: "",
+	});
+
 	return (
 		<div className=" h-screen flex justify-center flex-col items-center">
 			<div className="text-center mb-6">
@@ -25,31 +33,50 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 				<>
 					<LabelledInput
 						label="Email"
-						placeholder="Email"
-						onChange={() => {}}
+						placeholder="jane@mail.com"
+						name="email"
+						type="email"
+						onChange={(e) => {
+							setPostInputs((c) => ({ ...c, [e.target.name]: e.target.value }));
+						}}
 					/>
 					<LabelledInput
+						type="password"
 						label="Password"
-						placeholder="Password"
-						onChange={() => {}}
+						placeholder="123456"
+						name="password"
+						onChange={(e) => {
+							setPostInputs((c) => ({ ...c, [e.target.name]: e.target.value }));
+						}}
 					/>
 					<LabelledInput
-						label="Full Name"
-						placeholder="Full Name"
-						onChange={() => {}}
+						label="Full name"
+						placeholder="Full name"
+						name="Jane"
+						onChange={(e) => {
+							setPostInputs((c) => ({ ...c, [e.target.name]: e.target.value }));
+						}}
 					/>
 				</>
 			) : (
 				<>
 					<LabelledInput
 						label="Email"
-						placeholder="Email"
-						onChange={() => {}}
+						placeholder="jane@mail.com"
+						name="email"
+						type="email"
+						onChange={(e) => {
+							setPostInputs((c) => ({ ...c, [e.target.name]: e.target.value }));
+						}}
 					/>
 					<LabelledInput
+						type="password"
 						label="Password"
-						placeholder="Password"
-						onChange={() => {}}
+						placeholder="123456"
+						name="password"
+						onChange={(e) => {
+							setPostInputs((c) => ({ ...c, [e.target.name]: e.target.value }));
+						}}
 					/>
 				</>
 			)}
@@ -62,9 +89,17 @@ export default Auth;
 interface LabelledInputType {
 	label: string;
 	placeholder: string;
-	onChange: () => void;
+	name: string;
+	type?: string;
+	onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
-function LabelledInput({ label, placeholder, onChange }: LabelledInputType) {
+function LabelledInput({
+	label,
+	placeholder,
+	onChange,
+	name,
+	type,
+}: LabelledInputType) {
 	return (
 		<div className="mb-6 w-1/2">
 			<label
@@ -73,12 +108,13 @@ function LabelledInput({ label, placeholder, onChange }: LabelledInputType) {
 				{label}
 			</label>
 			<input
-				type="email"
+				type={type || "text"}
 				id="email"
 				className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 				placeholder={placeholder}
 				required
 				onChange={onChange}
+				name={name}
 			/>
 		</div>
 	);
