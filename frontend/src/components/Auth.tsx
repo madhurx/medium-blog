@@ -1,36 +1,34 @@
 import { SignupType } from "@madhurx/medium-common";
+import axios from "axios";
 import { ChangeEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../config";
 
 const Auth = ({ type }: { type: "signup" | "signin" }) => {
+	const navigate = useNavigate();
 	const [postInputs, setPostInputs] = useState<SignupType>({
 		name: "",
 		email: "",
 		password: "",
 	});
 
+	async function sendRequest() {
+		try {
+			const response = await axios.post(
+				`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,
+				postInputs,
+			);
+			const {jwt} = response.data;
+			localStorage.setItem("jwt", jwt);
+			navigate("/blogs");
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	return (
 		<div className=" h-screen flex justify-center flex-col items-center">
-			<div className="text-center mb-6">
-				<span className="font-bold text-3xl">
-					{type === "signup" ? "Create an Account" : "Welcome back"}
-				</span>
-				<br />
-
-				<span className="text-slate-500 font-semibold">
-					{type === "signup"
-						? "Already have an account? "
-						: "Don't have an account? "}
-				</span>
- 
-				<span className="text-slate-500 font-semibold underline">
-					{type === "signup" ? (
-						<Link to="/signin">Sign In</Link>
-					) : (
-						<Link to="/signup">Sign Up</Link>
-					)}
-				</span>
-			</div>
+			<AuthHeader type={type} />
 
 			{type === "signup" ? (
 				<>
@@ -60,7 +58,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 							setPostInputs((c) => ({ ...c, [e.target.name]: e.target.value }));
 						}}
 					/>
-					<LabelledButton buttonText="Sign Up" />
+					<LabelledButton buttonText="Sign Up" sendRequest={sendRequest} />
 				</>
 			) : (
 				<>
@@ -82,7 +80,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 							setPostInputs((c) => ({ ...c, [e.target.name]: e.target.value }));
 						}}
 					/>
-					<LabelledButton buttonText="Sign In" />
+					<LabelledButton buttonText="Sign In" sendRequest={sendRequest} />
 				</>
 			)}
 		</div>
@@ -125,12 +123,44 @@ function LabelledInput({
 	);
 }
 
-function LabelledButton({ buttonText }: { buttonText?: string }) {
+function LabelledButton({
+	buttonText,
+	sendRequest,
+}: {
+	buttonText?: string;
+	sendRequest: () => void;
+}) {
 	return (
 		<button
 			type="button"
-			className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-6 w-1/2">
+			className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-6 w-1/2"
+			onClick={sendRequest}>
 			{buttonText}
 		</button>
+	);
+}
+
+function AuthHeader({ type }: { type: string }) {
+	return (
+		<div className="text-center mb-6">
+			<span className="font-bold text-3xl">
+				{type === "signup" ? "Create an Account" : "Welcome back"}
+			</span>
+			<br />
+
+			<span className="text-slate-500 font-semibold">
+				{type === "signup"
+					? "Already have an account? "
+					: "Don't have an account? "}
+			</span>
+
+			<span className="text-slate-500 font-semibold underline">
+				{type === "signup" ? (
+					<Link to="/signin">Sign In</Link>
+				) : (
+					<Link to="/signup">Sign Up</Link>
+				)}
+			</span>
+		</div>
 	);
 }
