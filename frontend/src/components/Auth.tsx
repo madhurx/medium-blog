@@ -16,11 +16,13 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 					{type === "signup" ? "Create an Account" : "Welcome back"}
 				</span>
 				<br />
+
 				<span className="text-slate-500 font-semibold">
 					{type === "signup"
 						? "Already have an account? "
-						: "Want to create an account? "}
+						: "Don't have an account? "}
 				</span>
+ 
 				<span className="text-slate-500 font-semibold underline">
 					{type === "signup" ? (
 						<Link to="/signin">Sign In</Link>
@@ -29,6 +31,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 					)}
 				</span>
 			</div>
+
 			{type === "signup" ? (
 				<>
 					<LabelledInput
@@ -57,6 +60,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 							setPostInputs((c) => ({ ...c, [e.target.name]: e.target.value }));
 						}}
 					/>
+					<LabelledButton buttonText="Sign Up" />
 				</>
 			) : (
 				<>
@@ -78,6 +82,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 							setPostInputs((c) => ({ ...c, [e.target.name]: e.target.value }));
 						}}
 					/>
+					<LabelledButton buttonText="Sign In" />
 				</>
 			)}
 		</div>
@@ -117,5 +122,15 @@ function LabelledInput({
 				name={name}
 			/>
 		</div>
+	);
+}
+
+function LabelledButton({ buttonText }: { buttonText?: string }) {
+	return (
+		<button
+			type="button"
+			className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-6 w-1/2">
+			{buttonText}
+		</button>
 	);
 }
